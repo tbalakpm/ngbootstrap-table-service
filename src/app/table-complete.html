@@ -1,0 +1,41 @@
+
+<form>
+  <div class="form-group form-inline">
+      Full text search: <input class="form-control ml-2" type="text" name="searchTerm" [formControl]="filter"/>
+      <span class="ml-3" *ngIf="isLoadingResults">Loading...</span>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col" sortable="position" (sort)="onSort($event)">No.</th>
+      <th scope="col" sortable="name" (sort)="onSort($event)">Name</th>
+      <th scope="col" sortable="weight" (sort)="onSort($event)">Weight</th>
+      <th scope="col" sortable="symbol" (sort)="onSort($event)">Symbol</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let element of elements$ | async">
+      <th scope="row">{{ element.position }}</th>
+      <td>
+        <ngb-highlight [result]="element.name" [term]="filter.value"></ngb-highlight>
+      </td>
+      <td><ngb-highlight [result]="element.weight | number" [term]="filter.value"></ngb-highlight></td>
+      <td><ngb-highlight [result]="element.symbol" [term]="filter.value"></ngb-highlight></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="d-flex justify-content-between p-2">
+    <ngb-pagination
+      [collectionSize]="total" [page]="page" (pageChange)="page=$event;pag.next($event)" [pageSize]="pageSize">
+    </ngb-pagination>
+
+    <select class="custom-select" style="width: auto" name="pageSize" [ngModel]="pageSize" (ngModelChange)="pageSize=$event;pag.next(-pageSize)">
+      <option [ngValue]="5">5 items per page</option>
+      <option [ngValue]="10">10 items per page</option>
+      <option [ngValue]="20">20 items per page</option>
+    </select>
+  </div>
+
+</form>
